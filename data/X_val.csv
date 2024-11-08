@@ -1,4 +1,4 @@
-fuelType,rating,renterTripsTaken,reviewCount,location.city,location.latitude,location.longitude,location.state,owner.id,vehicle.make,vehicle.model,vehicle.type,vehicle.year
+fuelType,rating,renterTripsTaken,reviewCount,locationcity,locationlatitude,locationlongitude,locationstate,ownerid,vehiclemake,vehiclemodel,vehicletype,vehicleyear
 2,5.0,17,10,5,37.779263,-122.289525,4,2192096,49,387,1,2019
 2,4.96,131,122,786,33.427356,-111.955004,3,4144568,18,121,0,2018
 2,5.0,9,8,378,40.738539,-74.059061,30,3533385,49,333,2,2014
