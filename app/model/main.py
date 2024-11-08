@@ -20,50 +20,46 @@ run_ = mlflow.search_runs(order_by=['metrics.rmse ASC'],
 
 run_id = run_.info.run_id
 
-run_uri = f"runs:/{run_id}/preprocessor"
+run_uri = 'runs:/fa7792b4494c4baab57fe253f8c321ca/model'
 
-client.download_artifacts(
-    run_id=run_id,
-    path='preprocessor',
-    dst_path='.'
-)
+dv = mlflow.pyfunc.load_model(run_uri)
 
-with open("preprocessor/preprocessor.b", "rb") as f_in:
-    dv = pickle.load(f_in)
 
-model_name = "nyc-taxi-model"############################## PENDIENTE
-alias = "champion"
+# with open("preprocessor/preprocessor.b", "rb") as f_in:
+#     dv = pickle.load(f_in)
 
-model_uri = f"models:/{model_name}@{alias}"
+# model_name = "test-drive-dagshub-model"
+# alias = "champion"
 
-champion_model = mlflow.pyfunc.load_model(
-    model_uri=model_uri
-)
+# model_uri = f"models:/{model_name}@{alias}"
+
+# champion_model = mlflow.pyfunc.load_model(
+#     model_uri=model_uri
+# )
 
 def preprocess(input_data):
-
     input_dict = {
-    'fuelType': input_data.fuelType,
-    'rating': input_data.rating,
-    'renterTripsTaken': input_data.renterTripsTaken,
-    'location_city': input_data.location.city,
-    'location_latitude': input_data.location.latitude,
-    'location_longitude': input_data.location.longitude,
-    'location_state': input_data.location.state,
-    'owner_id': input_data.owner.id,
-    'vehicle_make': input_data.vehicle.make,
-    'vehicle_model': input_data.vehicle.model,
-    'vehicle_type': input_data.vehicle.type,
-    'vehicle_year': input_data.vehicle.year
-}
-
-    return dv.transform(input_dict)
+        'fuelType': input_data.fuelType,
+        'rating': input_data.rating,
+        'renterTripsTaken': input_data.renterTripsTaken,
+        'reviewCount': input_data.reviewCount,  # Add this line
+        'location.city': input_data.location_city,
+        'location.latitude': input_data.location_latitude,
+        'location.longitude': input_data.location_longitude,
+        'location.state': input_data.location_state,
+        'owner.id': input_data.owner_id,
+        'vehicle.make': input_data.vehicle_make,
+        'vehicle.model': input_data.vehicle_model,
+        'vehicle.type': input_data.vehicle_type,
+        'vehicle.year': input_data.vehicle_year
+    }
+    return input_dict
 
 def predict(input_data):
 
     X_pred = preprocess(input_data)
 
-    return champion_model.predict(X_pred)
+    return dv.predict(X_pred)
 
 
 app = FastAPI()
@@ -72,6 +68,7 @@ class InputData(BaseModel):
     fuelType: int
     rating: float
     renterTripsTaken: int
+    reviewCount: int
     location_city: int
     location_latitude: float
     location_longitude: float

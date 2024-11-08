@@ -1,10 +1,18 @@
-FROM python:3.11-slim
+# Imagen base
+FROM python:3.12.3-slim
 
+# Directorio de trabajo
 WORKDIR /code
 
+# Copiar archivos
 COPY ./requirements.txt /code/requirements.txt
 
-RUN apt-get update && apt-get install -y procps && pip install -U pip && rm /etc/localtime && ln -s /usr/share/zoneinfo/America/Mexico_City /etc/localtime
+RUN apt-get update && \
+    apt-get install -y procps curl && \
+    pip install -U pip && \
+    rm /etc/localtime && \
+    ln -s /usr/share/zoneinfo/America/Mexico_City /etc/localtime && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install -r ./requirements.txt
 
