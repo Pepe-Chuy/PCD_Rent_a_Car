@@ -4,22 +4,26 @@ import json
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('/code/data/processed.csv')
+# Load data
+raw = pd.read_csv('/code/data/raw.csv')
 
-cities = sorted(df['locationcity'].unique())
-fuel = sorted(df['fuelType'].unique())
-make = sorted(df['vehiclemake'].unique())
-model = sorted(df['vehiclemodel'].unique())
-type = sorted(df['vehicletype'].unique())
-state = sorted(df['locationstate'].unique())
+# Generate mapping dictionaries
+mapping_dicts = {}
+categorical_columns = ['locationcity', 'fuelType', 'vehiclemake', 'vehiclemodel', 'vehicletype', 'locationstate']
+for column in categorical_columns:
+    uniquevals = sorted(raw[column].unique())
+    mapping_dicts[column] = {value: idx for idx, value in enumerate(uniquevals)}
 
+
+# Streamlit app header
 st.write("""
-# Application to predict the price for car rental
+# Application to Predict the Price for Car Rental
 """)
 
-st.sidebar.header('User Input Parameters')
+st.sidebar.header('User  Input Parameters')
 
 def convert_int64(obj):
+    """Helper function to convert np.int64 to int for JSON serialization."""
     if isinstance(obj, dict):
         return {key: convert_int64(value) for key, value in obj.items()}
     elif isinstance(obj, list):
@@ -29,45 +33,45 @@ def convert_int64(obj):
     else:
         return obj
 
-
 def user_input_features():
-    Fueltype = st.selectbox("Select a fuel type", fuel)
+    """Collect user inputs via Streamlit widgets and map them to backend-compatible values."""
+    Fueltype = st.selectbox("Select a fuel type", list(mapping_dicts['fuelType'].keys()))
     Rating = st.sidebar.slider("Rating", value=3.0, min_value=0.0, max_value=5.0)
     TripsTaken = st.sidebar.number_input("Trips taken", min_value=0, max_value=20, step=1)
-    ReviewCount = st.sidebar.number_input("Review Count", min_value=0, max_value=1000, step=1)  # Added
-    City = st.selectbox("Select a city", cities)
+    ReviewCount = st.sidebar.number_input("Review Count", min_value=0, max_value=1000, step=1)
+    City = st.selectbox("Select a city", list(mapping_dicts['locationcity'].keys()))
     Latitude = st.sidebar.number_input("Latitude", format="%.6f", min_value=-90.0, max_value=90.0, step=0.000001)
-    Longitude = st.sidebar.number_input("Longitude", format="%.6f", min_value=-180.0, max_value=180.0, step=0.000001)    
-    State = st.selectbox("Select a state", state)
+    Longitude = st.sidebar.number_input("Longitude", format="%.6f", min_value=-180.0, max_value=180.0, step=0.000001)
+    State = st.selectbox("Select a state", list(mapping_dicts['locationstate'].keys()))
     OwnerId = st.sidebar.number_input("Owner ID", min_value=10000000, max_value=99999999, step=1)
-    VehicleMake = st.selectbox("Select a Vehicle make", make)
-    VehicleModel = st.selectbox("Select a Vehicle model", model)
-    VehicleType = st.selectbox("Select a Vehicle type", type)
+    VehicleMake = st.selectbox("Select a Vehicle make", list(mapping_dicts['vehiclemake'].keys()))
+    VehicleModel = st.selectbox("Select a Vehicle model", list(mapping_dicts['vehiclemodel'].keys()))
+    VehicleType = st.selectbox("Select a Vehicle type", list(mapping_dicts['vehicletype'].keys()))
     VehicleYear = st.sidebar.slider("Vehicle Year", 1900, 2025, 2020)
-    
+
+    # Map user-friendly selections to integers using mapping_dicts
     input_dict = {
-        'fuelType': Fueltype,
+        'fuelType': mapping_dicts['fuelType'][Fueltype],
         'rating': Rating,
         'renterTripsTaken': TripsTaken,
-        'reviewCount': ReviewCount,  # Added
-        'location_city': City,  # Changed
-        'location_latitude': Latitude,  # Changed
-        'location_longitude': Longitude,  # Changed
-        'location_state': State,  # Changed
-        'owner_id': OwnerId,  # Changed
-        'vehicle_make': VehicleMake,  # Changed
-        'vehicle_model': VehicleModel,  # Changed
-        'vehicle_type': VehicleType,  # Changed
-        'vehicle_year': VehicleYear  # Changed
+        'reviewCount': ReviewCount,
+        'location_city': mapping_dicts['locationcity'][City],
+        'location_latitude': Latitude,
+        'location_longitude': Longitude,
+        'location_state': mapping_dicts['locationstate'][State],
+        'owner_id': OwnerId,
+        'vehicle_make': mapping_dicts['vehiclemake'][VehicleMake],
+        'vehicle_model': mapping_dicts['vehiclemodel'][VehicleModel],
+        'vehicle_type': mapping_dicts['vehicletype'][VehicleType],
+        'vehicle_year': VehicleYear
     }
     return input_dict
 
-
+# Collect user inputs
 input_dict = user_input_features()
 input_dict = convert_int64(input_dict)
 
-
-
+# Predict button functionality
 if st.button('Predict'):
     try:
         response = requests.post(
@@ -83,7 +87,7 @@ if st.button('Predict'):
             st.error(f"Error: {response.status_code} - {response.text}")
     except Exception as e:
         st.error(f"An error occurred: {e}")
-
+        
 # if st.button('Predict'):
 #     response = requests.post(
 #         #url="http://localhost:8000/predict",
