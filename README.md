@@ -22,14 +22,14 @@ The repository includes sample CSV files for demonstration purposes:
 
 ## Technologies
 
-- *Backend:* [Framework/Language] (e.g., FastAPI, Flask, Django)
-- *Frontend:* [Framework/Language] (e.g., React, Vue.js)
-- *Database:* [Database System] (e.g., PostgreSQL, SQLite)
-- *Machine Learning:* (Optional) [ML Library/Framework] (e.g., scikit-learn, TensorFlow)
+- *Backend:* [Framework/Language] (FastAPI, Python, Docker)
+- *Frontend:* [Framework/Language] (Streamlit Docker)
 
 ## Setup
 
-1. *Clone the Repository:*
-```bash
-git clone https://github.com/yourusername car-rental-reservation-system.git
-```
+## notebooks
+
+
+
+## app
+implementation of front and backend of an app built on a 2 docker images, connected and setted up by a docker compose, the backend is built on python, and fastapi, it picks a model from the model registry in mlflow and uses it for the prediction, the frontend is settted up in streamlit, it displays all necesary variables for the user to fill 
