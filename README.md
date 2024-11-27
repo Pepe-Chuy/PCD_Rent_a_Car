@@ -1,5 +1,3 @@
-Here’s a README file generated based on your notebook content:
-
 ---
 
 # Rent a Car - Data Science Project
