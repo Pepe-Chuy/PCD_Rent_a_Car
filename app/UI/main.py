@@ -87,12 +87,4 @@ if st.button('Predict'):
             st.error(f"Error: {response.status_code} - {response.text}")
     except Exception as e:
         st.error(f"An error occurred: {e}")
-        
-# if st.button('Predict'):
-#     response = requests.post(
-#         #url="http://localhost:8000/predict",
-#         url="http://pcd-car-model-container:8000/predict",
-#         data=json.dumps(input_dict)
-#     )
-
-#     st.write(f"El precio estimado de la renta es: {response.json()['prediction']} dólares")
+    

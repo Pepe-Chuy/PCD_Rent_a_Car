@@ -24,25 +24,12 @@ run_uri = 'runs:/fa7792b4494c4baab57fe253f8c321ca/model'
 
 dv = mlflow.pyfunc.load_model(run_uri)
 
-
-# with open("preprocessor/preprocessor.b", "rb") as f_in:
-#     dv = pickle.load(f_in)
-
-# model_name = "test-drive-dagshub-model"
-# alias = "champion"
-
-# model_uri = f"models:/{model_name}@{alias}"
-
-# champion_model = mlflow.pyfunc.load_model(
-#     model_uri=model_uri
-# )
-
 def preprocess(input_data):
     input_dict = {
         'fuelType': input_data.fuelType,
         'rating': input_data.rating,
         'renterTripsTaken': input_data.renterTripsTaken,
-        'reviewCount': input_data.reviewCount,  # Add this line
+        'reviewCount': input_data.reviewCount,
         'location.city': input_data.location_city,
         'location.latitude': input_data.location_latitude,
         'location.longitude': input_data.location_longitude,
