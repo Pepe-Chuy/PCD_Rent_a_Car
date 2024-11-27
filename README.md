@@ -85,4 +85,3 @@ While challenging, the learnings from this project will be invaluable for future
 
 ---
 
-This README file is structured and formatted to explain the project goals, background, and methodologies clearly to a broader audience, including collaborators and stakeholders.
