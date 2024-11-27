@@ -8,18 +8,17 @@ from sklearn import metrics
 from hyperopt import fmin, tpe, Trials, hp
 import dagshub
 
+# DagsHub initialization
 dagshub.init(url="https://dagshub.com/Pepe-Chuy/PCD_Rent_a_Car", mlflow=True)
 MLFLOW_TRACKING_URI = mlflow.get_tracking_uri()
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 mlflow.set_experiment(experiment_name="Rent a Car")
-
 
 @task(name="Read Data", retries=5, retry_delay_seconds=20)
 def read_data(filepath: str) -> pd.DataFrame:
     """Read raw data into DataFrame"""
     data = pd.read_csv(filepath)
     return data
-
 
 @task(name="Train-Test Split", retries=5, retry_delay_seconds=20)
 def tt_split(df: pd.DataFrame, test_size: float) -> tuple:
@@ -29,7 +28,6 @@ def tt_split(df: pd.DataFrame, test_size: float) -> tuple:
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
     return X_train, X_test, y_train, y_test
-
 
 @task(name="Train Best Model", retries=2)
 def train_best_model(X_train, y_train):
@@ -82,7 +80,6 @@ def train_best_model(X_train, y_train):
 
     return best_params
 
-
 @task(name="Log Best Model", retries=2)
 def log_best_model(X_train, X_test, y_train, y_test, best_params):
     """Log the best model and its metrics"""
@@ -106,3 +103,13 @@ def log_best_model(X_train, X_test, y_train, y_test, best_params):
         mlflow.log_params(best_params)
         mlflow.log_metric("RMSE", rmse)
         mlflow.log_metric("R_squared", r_squared)
+
+@flow(name="Random Forest Training Flow")
+def random_forest_pipeline(filepath: str, test_size: float):
+    df = read_data(filepath)
+    X_train, X_test, y_train, y_test = tt_split(df, test_size)
+    best_params = train_best_model(X_train, y_train)
+    log_best_model(X_train, X_test, y_train, y_test, best_params)
+
+
+random_forest_pipeline(filepath="../data/processed.csv", test_size=0.2)

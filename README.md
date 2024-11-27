@@ -1,35 +1,90 @@
-# Car Rental Reservation System
+Here’s a README file generated based on your notebook content:
 
-## Overview
+---
 
-This repository contains a web application for managing car rentals. The system allows users to rent cars from a dealership, view available cars, make reservations, and track rental history. It includes features for managing user profiles, car inventory, and reservation details.
+# Rent a Car - Data Science Project
 
-## Features
+## Introduction
 
-- *User Management:* Register and manage user profiles, including contact information and driver’s license details.
-- *Car Inventory:* View and manage a list of cars available for rent, including details such as make, model, year, and color.
-- *Reservation System:* Create, update, and track car rental reservations with start and end dates.
-- *Dynamic Pricing:* (Optional) Implement dynamic pricing based on demand and availability.
-- *Fraud Detection:* (Optional) Monitor and prevent fraudulent activities.
-- *Recommendation System:* (Optional) Recommend cars based on user preferences and past behavior.
+In this data science project, we aim to develop a model to estimate the daily rental price of a car based on its specific characteristics. By applying techniques learned in class, we will identify patterns and relationships among various vehicle attributes, such as manufacturing year, brand, model, fuel type, mileage, and more, to provide precise rental price predictions.
 
-## Data
+Additionally, we will utilize **FastAPI** to develop a web application that allows users to interact with the system in a simple and fast way. This application is essential in a market where car rentals are increasingly popular. An accurate tool will benefit both car owners, by setting competitive prices, and customers, by offering fair rates based on data.
 
-The repository includes sample CSV files for demonstration purposes:
+---
 
-- users.csv: Contains information about users who have rented cars, including their contact details and registration dates.
-- cars_rentals.csv: Contains information about the cars, their rental periods, and the users who rented them.
+## Background
 
-## Technologies
+The model will be trained using a car rental dataset from Kaggle. This process involves data cleaning, feature selection, and model evaluation. The ultimate goal is to provide a valuable tool for vehicle owners to set competitive prices while offering customers fair, data-driven rates.
 
-- *Backend:* [Framework/Language] (FastAPI, Python, Docker)
-- *Frontend:* [Framework/Language] (Streamlit Docker)
+---
 
-## Setup
+## Objectives
 
-## notebooks
+### General Objective
 
+Develop a data science solution to predict the daily rental price of a car, applying machine learning and MLOps techniques. This will optimize decision-making in car rental companies by implementing a predictive model deployed as a web API using **FastAPI**.
 
+### Specific Objectives
 
-## app
-implementation of front and backend of an app built on a 2 docker images, connected and setted up by a docker compose, the backend is built on python, and fastapi, it picks a model from the model registry in mlflow and uses it for the prediction, the frontend is settted up in streamlit, it displays all necesary variables for the user to fill 
+- Conduct exploratory data analysis (EDA) on the car rental dataset to identify patterns and relationships among key variables (e.g., manufacturing year, brand, model, fuel type, mileage).
+- Preprocess the data, including cleaning, transformation, and feature selection, to ensure quality.
+- Train and validate various machine learning models to select the one that best predicts daily rental prices.
+- Develop an API using **FastAPI** for users to interact with the predictive model.
+- Deploy the API in the cloud to ensure accessibility and scalability, enabling real-time rental price queries.
+
+---
+
+## Problem Statement
+
+In the car rental market, both owners and customers face challenges related to pricing. The lack of precise tools for estimating daily rental prices based on vehicle characteristics results in inefficient pricing and unsatisfactory user experiences.
+
+Our solution is to develop a predictive model and deploy it through a web API using **FastAPI**. This will enable precise price estimation, optimizing pricing strategies and enhancing transparency in the market.
+
+---
+
+## Modeling
+
+We conducted several experiments to evaluate which approach provided the best results. We utilized models like **RandomForestRegressor** with **GridSearch** to select and log the best-performing model. Initially orchestrated using a notebook, the workflow was later implemented in **MLflow**. The selected model was **RandomForest**.
+
+---
+
+## Pipeline
+
+The **Prefect** pipeline includes the following tasks:
+
+- **Read Data:** Reads the path and converts it into a DataFrame.
+- **Train-Test-Split:** Splits the data into training and testing sets, separating features (X) and target (Y).
+- **Train Best Model:** Trains the RandomForest model using GridSearch.
+- **Log Best Model:** Logs the best model in MLflow.
+
+---
+
+## Application
+
+The application consists of two containers orchestrated using a `docker-compose.yaml` file. It includes:
+
+1. **Backend:** Built with **FastAPI**, it loads the best model from MLflow for predictions.
+2. **Frontend:** Developed using **Streamlit**, providing a user-friendly interface for inputting vehicle details to predict rental prices.
+
+Files for backend and frontend include:
+- `main.py`
+- `Dockerfile`
+- `requirements.txt`
+
+---
+
+## Deployment
+
+The application was deployed on an **AWS EC2 instance**, hosting both backend and frontend images. This setup allows users to connect and make API requests via the EC2 instance, ensuring efficient and functional operations.
+
+---
+
+## Conclusions
+
+This project provided a comprehensive understanding of the entire lifecycle of a machine learning model, from model logging and versioning to creating a workflow with Prefect. Furthermore, we successfully developed a functional application with backend and frontend, deploying it on the cloud using an EC2 instance.
+
+While challenging, the learnings from this project will be invaluable for future endeavors, enabling us to turn models into tangible, functional tools.
+
+---
+
+This README file is structured and formatted to explain the project goals, background, and methodologies clearly to a broader audience, including collaborators and stakeholders.
